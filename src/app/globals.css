@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Brand pages override --brand-primary / --brand-accent on a wrapper,
+ * so the same components take each brand's colors.
+ */
+:root {
+  --brand-primary: #004b91;
+  --brand-accent: #0b1f3a;
+  --surface: #ffffff;
+  --surface-muted: #f5f7fa;
+  --surface-sunken: #e9edf2;
+  --ink: #0f172a;
+  --ink-muted: #475569;
+  --line: #e2e8f0;
+  /* Home hero: deep blue gradient. */
+  --hero-from: #081a36;
+  --hero-to: #17457d;
+}
+
+@theme inline {
+  --color-brand: var(--brand-primary);
+  --color-brand-accent: var(--brand-accent);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-hero-from: var(--hero-from);
+  --color-hero-to: var(--hero-to);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.12);
+
+  /* Product page v2: each brand sets these variables from its product theme (see ProductV2Theme). */
+  --color-v2-hero-from: var(--v2-hero-from);
+  --color-v2-hero-to: var(--v2-hero-to);
+  --color-v2-description: var(--v2-description-background);
+  --color-v2-specifications: var(--v2-specifications-background);
+  --color-v2-accent: var(--v2-accent);
+  --color-v2-button: var(--v2-button);
+
+  --animate-fade-in: fade-in 0.5s ease;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--surface-muted);
+  color: var(--ink);
+}
+
+/* Pages that need more contrast for their white cards ask for a darker page background. */
+body:has([data-surface="sunken"]) {
+  background: var(--surface-sunken);
+}
+
+/* Rich text coming from the admin editor. */
+.prose-portal > * + * {
+  margin-top: 0.75rem;
+}
+.prose-portal p,
+.prose-portal li {
+  line-height: 1.65;
+}
+.prose-portal h2,
+.prose-portal h3,
+.prose-portal h4 {
+  font-weight: 600;
+  margin-top: 1.25rem;
+}
+.prose-portal ul,
+.prose-portal ol {
+  padding-left: 1.25rem;
+}
+.prose-portal ul {
+  list-style: disc;
+}
+.prose-portal ol {
+  list-style: decimal;
+}
+.prose-portal li + li {
+  margin-top: 0.25rem;
+}
+.prose-portal strong,
+.prose-portal b {
+  font-weight: 600;
+}
+.prose-portal a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+}

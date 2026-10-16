@@ -1,0 +1,40 @@
+# Production portal. Start portal_back's docker-compose.prod.yml first: the build prerenders the catalog
+# from the API over the shared network.
+#
+#   cp .env.production.example .env.production   # fill in the values
+#   # once per host: a BuildKit builder inside portal_net, since `next build` calls the API (generateStaticParams)
+#   docker buildx create --name portal_builder --driver docker-container --driver-opt network=portal_net \
+#     --buildkitd-flags '--allow-insecure-entitlement network.host'
+#   BUILDX_BUILDER=portal_builder docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# After a code change, run the last command again (it rebuilds the image and replaces the container).
+
+name: portal_prod_web
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: prod
+      # `next build` calls the API (generateStaticParams): RUN steps use the network of the
+      # portal_builder container, which sits inside portal_net (see the commands above).
+      network: host
+      entitlements: [network.host]
+      args:
+        API_INTERNAL_URL: ${API_INTERNAL_URL:-http://portal_api:8080/api/v1}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in .env.production}
+    image: portal-front:prod
+    env_file: .env.production
+    restart: unless-stopped
+    ports:
+      # Behind the reverse proxy (TLS); only reachable from this host.
+      - "127.0.0.1:${WEB_PORT:-3100}:3000"
+    networks:
+      portal_net:
+        # The API revalidates the pages at http://portal_web:3000.
+        aliases: [portal_web]
+
+networks:
+  portal_net:
+    external: true

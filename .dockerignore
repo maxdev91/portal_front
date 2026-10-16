@@ -1,0 +1,9 @@
+# Kept out of the production build context (the development image bind-mounts the source instead).
+.env
+.env.*
+.git
+.next
+node_modules
+coverage
+*.tsbuildinfo
+npm-debug.log*
